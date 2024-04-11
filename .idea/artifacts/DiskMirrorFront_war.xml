@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="DiskMirrorFront:war">
+    <output-path>$PROJECT_DIR$/out/artifacts/DiskMirrorFront_war</output-path>
+    <root id="archive" name="DiskMirrorFront.war">
+      <element id="artifact" artifact-name="DiskMirrorFront:war exploded" />
+    </root>
+  </artifact>
+</component>
