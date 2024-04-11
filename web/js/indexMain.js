@@ -8,7 +8,7 @@ document.getElementById("submitButton").addEventListener("click", function () {
         jokerBoxPopUp.show("请您输入信息哦!!! ")
         return;
     }
-    if (value === undefined){
+    if (value === undefined) {
         value = '0';
     }
     document.cookie = `diskMirror_server_pass=${value}; path=/`;

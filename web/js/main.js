@@ -1,5 +1,28 @@
 const jokerBoxPopUp = new JokerBox_popUp(document.getElementById("show_area"));
 
+function transferDeposit() {
+    const s = prompt("请输入您要转存的文件的 url");
+    if (s) {
+        const fileName = prompt("请输入您要转存的文件在盘镜中的名字");
+        if (fileName) {
+            diskMirror.transferDeposit(
+                {
+                    userId: userId,
+                    type: indexConfig.spaceType,
+                    fileName: fileName,
+                    url: s,
+                },
+                (data) => {
+                    jokerBoxPopUp.show(data.fileName + " 转存成功!!! 刷新可见!!");
+                },
+                (e) => {
+                    jokerBoxPopUp.show(fileName + " 转存失败：" + JSON.stringify(e));
+                }
+            )
+        }
+    }
+}
+
 function reloadFsPath(element) {
     let searchParams = DiskMirrorFront.search_Params("path");
     if (element) {
@@ -13,6 +36,20 @@ function reloadFsPath(element) {
         // 获取到当前层级
         const value = document.querySelector("#diskMirrorPathInput").value;
         reloadFsPath(value ? value : '/');
+    }
+}
+
+let isShowTransferDeposit_fileList_table = false;
+
+function showTransferDeposit_fileList_table(b) {
+    if (isShowTransferDeposit_fileList_table) {
+        document.querySelectorAll("#transferDeposit_fileList_table").forEach((element) => element.style.display = 'none');
+        b.innerText = ' 转存表';
+        isShowTransferDeposit_fileList_table = false;
+    } else {
+        document.querySelectorAll("#transferDeposit_fileList_table").forEach((element) => element.style.display = 'table');
+        b.innerText = ' 转存表'
+        isShowTransferDeposit_fileList_table = true;
     }
 }
 
@@ -31,6 +68,8 @@ if (searchParams1[0] === null) {
 }
 const userId = searchParams0[searchParams0.length - 1];
 const type = indexConfig.spaceType ? indexConfig.spaceType : 'Binary';
+
+document.querySelector("title").innerText = `盘镜${indexConfig.spaceType}号 空间文件管理器`;
 
 function mkdir() {
     const s = prompt("您要创建的目录名字？", '/xxx/xxx');
@@ -88,7 +127,8 @@ window.onload = function () {
                             }
                         )
                     },
-                    document.querySelector("#diskMirrorPathInput")
+                    document.querySelector("#diskMirrorPathInput"),
+                    f => diskMirror.downLoad(userId, type, f.fileName, (res) => window.open('preView.html?url=' + res)),
                 );
                 // 判断是否需要路径
                 const searchParams = DiskMirrorFront.search_Params('path');
@@ -129,7 +169,8 @@ window.onload = function () {
                                 console.log('reName', fileName);
                                 jokerBoxPopUp.show("还没接入重命名操作!")
                             },
-                            document.querySelector("#diskMirrorPathInput")
+                            document.querySelector("#diskMirrorPathInput"),
+                            f => diskMirror.downLoad(userId, type, f.fileName, (res) => window.open('preView.html?url=' + res)),
                         );
                         // 判断是否需要路径
                         const searchParams = DiskMirrorFront.search_Params('path');
@@ -161,6 +202,33 @@ window.onload = function () {
                 console.error(e);
                 jokerBoxPopUp.show(e)
             })
+
+        const transferDeposit_fileList_table = document.querySelector("#transferDeposit_fileList_table tbody");
+
+
+        // 转存查询
+        setInterval(() => {
+            diskMirror.transferDepositStatus({userId: userId, type: type}, (res) => {
+                transferDeposit_fileList_table.innerHTML = '';
+                for (const fileName in res) {
+                    const tr = document.createElement("tr");
+                    tr.className = "row0";
+                    const td0 = document.createElement("td");
+                    const span0 = document.createElement("span");
+                    span0.innerText = '';
+                    span0.className = 'load-icon'
+                    const span1 = document.createElement("span");
+                    span1.innerText = ' ' + fileName;
+                    td0.appendChild(span0);
+                    td0.appendChild(span1);
+                    tr.appendChild(td0);
+                    const td1 = document.createElement("td");
+                    td1.innerText = res[fileName];
+                    tr.appendChild(td1);
+                    transferDeposit_fileList_table.appendChild(tr);
+                }
+            }, (_) => jokerBoxPopUp.show('无法与转存状态服务连接，请检查网络或diskMirror服务器版本是否 >= 1.2.0'))
+        }, 5000)
 
         document.querySelector("#diskMirrorBackPath").addEventListener("click", () => fsList.toBackPath());
 

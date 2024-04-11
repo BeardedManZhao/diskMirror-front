@@ -26,11 +26,19 @@
         <div>
             <img alt="logo" class="icon-navigation" src="image/logo.png">
         </div>
-        <div id="show_area" style="text-align: center">diskMirror-front 1.0.1</div>
+        <div id="show_area" style="text-align: center">diskMirror-front 1.0.2</div>
         <div class="button_list1">
             <button class="item_Button" onclick="window.open('index.html')">新界面</button>
+            <button class="item_Button" onclick="showTransferDeposit_fileList_table(this);"
+                    title="查看当前正在转存的任务"> 转存表
+            </button>
+            <button class="item_Button" onclick="transferDeposit()" title="您可以将某个链接中的数据保存到您的盘镜中">
+                转存
+            </button>
+            <button class="item_Button" onclick="document.getElementById('fileUpload').click()"
+                    title="您可以将某个文件上传到您的盘镜中"> 上传
+            </button>
             <button class="item_Button" onclick="reloadFsPath()"> 刷新</button>
-            <button class="item_Button" onclick="document.getElementById('fileUpload').click()"> 上传</button>
             <button class="item_Button" onclick="mkdir()"> 创目录</button>
             <button class="item_Button" onclick="window.open('https://github.com/BeardedManZhao/DiskMirror.git')">
                 盘镜
@@ -38,6 +46,17 @@
         </div>
     </div>
     <div class="div3">
+        <table class="wide-table" id="transferDeposit_fileList_table">
+            <thead>
+            <tr>
+                <th title="保存到盘镜中的文件的名字">转存文件的名称</th>
+                <th title="对应文件的链接，此链接就是您要转存的文件源">正在转存的链接</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
         <table class="wide-table" id="fileList_table">
 
         </table>

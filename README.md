@@ -1,11 +1,13 @@
 # diskMirror-front
+
 DiskMirror 的浏览器客户端，其能够接入到任何盘镜服务器中，使用空间登录的方式访问，能够帮助您可视化的操作盘镜！
 
 ## 快速开始
 
 ### 部署您的盘镜后端
 
-后端的部署操作是很简单的，您可以直接将 [后端服务器](https://github.com/BeardedManZhao/diskMirror-backEnd-spring-boot.git) 部署在您的服务器中，然后直接启动！
+后端的部署操作是很简单的，您可以直接将 [后端服务器](https://github.com/BeardedManZhao/diskMirror-backEnd-spring-boot.git)
+部署在您的服务器中，然后直接启动！
 
 ### 下载并编辑配置文件
 
@@ -23,8 +25,21 @@ const indexConfig = {
 ```
 
 ### 访问您的前端项目
+
 访问您的前端项目，即可开始使用，下面是一个访问示例
+
 #### 输入信息
+
 ![image](https://github.com/BeardedManZhao/diskMirror-front/assets/113756063/fcf2b25d-cd9f-4185-ba4c-dd7bcbfc8d42)
+
 #### 文件管理器
+
 ![image](https://github.com/BeardedManZhao/diskMirror-front/assets/113756063/30620381-b293-494b-bf05-08981b19f269)
+
+## 更新记录
+
+### 1.0.2 版本
+
+- 新增了转存功能的支持，如果您使用的是 diskMirror 的 1.2.0 版本 则您可以使用转存功能。
+- 新增了预览文件功能
+- 首页按钮调换位置,为了更好的体验。

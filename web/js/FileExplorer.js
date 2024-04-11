@@ -25,8 +25,9 @@ class Checkbox {
      * @param deleteClick 点击删除按钮之后的操作，输入的是dataObj
      * @param reNameClick 点击重命名按钮之后的操作，输入的是dataObj
      * @param trClick 点击tr之后的操作，输入的是dataObj
+     * @param preView 点击预览按钮之后的操作，输入的是dataObj
      */
-    constructor(index_key, dataList, dom, downloadClick, deleteClick, reNameClick, trClick) {
+    constructor(index_key, dataList, dom, downloadClick, deleteClick, reNameClick, trClick, preView) {
         this.#index = index_key;
         this.dom = dom;
         this.dom_body = document.createElement('tbody');
@@ -34,6 +35,7 @@ class Checkbox {
         this.deleteClick = deleteClick;
         this.reNameClick = reNameClick;
         this.trClick = trClick;
+        this.previewClick = preView;
         this.sortModel = {};
 
         // 初始化表头
@@ -245,7 +247,7 @@ class Checkbox {
         td2_.addEventListener('click', f2);
         tr.appendChild(td2_);
         const td2 = document.createElement("td");
-        td2.innerText = DiskMirrorFront.formatBytes(dataObj.size);
+        td2.innerText = DiskMirrorFront.formatBytes(dataObj.isDir ? '----' : dataObj.size);
         td2.addEventListener('click', f2);
         tr.appendChild(td2);
         const td3 = document.createElement("td");
@@ -256,7 +258,7 @@ class Checkbox {
         const a40 = document.createElement("a");
         a40.className = "okClick";
         a40.href = "#";
-        a40.innerText = "删除 ";
+        a40.innerText = "删除 ";
         a40.addEventListener('click', () => {
             if (this.#check_a_list_length >= 1) {
                 if (confirm("您选中了多个文件，是否要批量删除？")) {
@@ -271,7 +273,7 @@ class Checkbox {
         const a41 = document.createElement("a");
         a41.className = "okClick";
         a41.href = "#";
-        a41.innerText = "下载 ";
+        a41.innerText = "下载 ";
         a41.addEventListener('click', () => {
             this.downloadClick(dataObj);
         });
@@ -284,6 +286,18 @@ class Checkbox {
             this.reNameClick(dataObj);
         });
         td4.appendChild(a42);
+        const a43 = document.createElement("a");
+        a43.className = "okClick";
+        a43.href = "#";
+        a43.innerText = "预览";
+        a43.addEventListener('click', () => {
+            if (dataObj.isDir) {
+                jokerBoxPopUp.show('此项目是一个目录,无法预览!');
+            } else {
+                this.previewClick(dataObj);
+            }
+        });
+        td4.appendChild(a43);
         tr.appendChild(td4);
         this.dom_body.appendChild(tr);
         this.#length++;
@@ -307,7 +321,7 @@ class FS_List {
 
     #nowPathFs;
 
-    constructor(index_key, dataList, dom, downloadClick, deleteClick, reNameClick, pathInput) {
+    constructor(index_key, dataList, dom, downloadClick, deleteClick, reNameClick, pathInput, previewClick) {
         this.#allPathFs = dataList;
         this.#nowPathFs = dataList;
         this.checkBoxPoint = new Checkbox(index_key, this.#nowPathFs, dom,
@@ -333,7 +347,8 @@ class FS_List {
                     const p = this.#path + f.fileName + '/';
                     this.setPath(p);
                 }
-            });
+            },
+            previewClick);
         if (pathInput !== undefined) {
             this.pathInput = pathInput;
             let fsList = this;

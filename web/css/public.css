@@ -136,3 +136,19 @@ input:focus {
     color: #FFFFFF;
     background-color: rgba(35, 43, 77, 0.83);
 }
+
+/* 定义名为 "rotateText" 的关键帧动画 */
+@keyframes rotateText {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.load-icon {
+    display: inline-block;
+    /* 应用动画到 .load-icon 类 */
+    animation: rotateText 2s linear infinite;
+}
