@@ -247,7 +247,7 @@ class Checkbox {
         td2_.addEventListener('click', f2);
         tr.appendChild(td2_);
         const td2 = document.createElement("td");
-        td2.innerText = DiskMirrorFront.formatBytes(dataObj.isDir ? '----' : dataObj.size);
+        td2.innerText = dataObj.isDir ? '----' : DiskMirrorFront.formatBytes(dataObj.size);
         td2.addEventListener('click', f2);
         tr.appendChild(td2);
         const td3 = document.createElement("td");
