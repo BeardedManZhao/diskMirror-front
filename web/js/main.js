@@ -1,3 +1,5 @@
+const jokerBoxPopUp = new JokerBox_popUp(document.getElementById("show_area"));
+
 function reloadFsPath(element) {
     let searchParams = DiskMirrorFront.search_Params("path");
     if (element) {
@@ -45,7 +47,6 @@ function mkdir() {
 }
 
 window.onload = function () {
-    const jokerBoxPopUp = new JokerBox_popUp(document.getElementById("show_area"));
     let fsList;
     try {
         diskMirror.setSk(parseInt(searchParams1[searchParams1.length - 1]), indexConfig.domain)
