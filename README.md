@@ -24,3 +24,7 @@ const indexConfig = {
 
 ### 访问您的前端项目
 访问您的前端项目，即可开始使用，下面是一个访问示例
+#### 输入信息
+![image](https://github.com/BeardedManZhao/diskMirror-front/assets/113756063/fcf2b25d-cd9f-4185-ba4c-dd7bcbfc8d42)
+#### 文件管理器
+![image](https://github.com/BeardedManZhao/diskMirror-front/assets/113756063/30620381-b293-494b-bf05-08981b19f269)
