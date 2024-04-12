@@ -6,6 +6,9 @@ function transferDeposit() {
         const fileName = prompt("请输入您要转存的文件在盘镜中的名字");
         if (fileName) {
             jokerBoxPopUp.show("转存任务已提交，转存表中可查队列信息哦!")
+            if (!isShowTransferDeposit_fileList_table){
+                showTransferDeposit_fileList_table();
+            }
             diskMirror.transferDeposit(
                 {
                     userId: userId,
