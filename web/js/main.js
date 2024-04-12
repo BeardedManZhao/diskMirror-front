@@ -209,26 +209,28 @@ window.onload = function () {
 
         // 转存查询
         setInterval(() => {
-            diskMirror.transferDepositStatus({userId: userId, type: type}, (res) => {
-                transferDeposit_fileList_table.innerHTML = '';
-                for (const fileName in res) {
-                    const tr = document.createElement("tr");
-                    tr.className = "row0";
-                    const td0 = document.createElement("td");
-                    const span0 = document.createElement("span");
-                    span0.innerText = '';
-                    span0.className = 'load-icon'
-                    const span1 = document.createElement("span");
-                    span1.innerText = ' ' + fileName;
-                    td0.appendChild(span0);
-                    td0.appendChild(span1);
-                    tr.appendChild(td0);
-                    const td1 = document.createElement("td");
-                    td1.innerText = res[fileName];
-                    tr.appendChild(td1);
-                    transferDeposit_fileList_table.appendChild(tr);
-                }
-            }, (_) => jokerBoxPopUp.show('无法与转存状态服务连接，请检查网络或diskMirror服务器版本是否 >= 1.2.0'))
+            if (isShowTransferDeposit_fileList_table) {
+                diskMirror.transferDepositStatus({userId: userId, type: type}, (res) => {
+                    transferDeposit_fileList_table.innerHTML = '';
+                    for (const fileName in res) {
+                        const tr = document.createElement("tr");
+                        tr.className = "row0";
+                        const td0 = document.createElement("td");
+                        const span0 = document.createElement("span");
+                        span0.innerText = '';
+                        span0.className = 'load-icon'
+                        const span1 = document.createElement("span");
+                        span1.innerText = ' ' + fileName;
+                        td0.appendChild(span0);
+                        td0.appendChild(span1);
+                        tr.appendChild(td0);
+                        const td1 = document.createElement("td");
+                        td1.innerText = res[fileName];
+                        tr.appendChild(td1);
+                        transferDeposit_fileList_table.appendChild(tr);
+                    }
+                }, (_) => jokerBoxPopUp.show('无法与转存状态服务连接，请检查网络或diskMirror服务器版本是否 >= 1.2.0'));
+            }
         }, 5000)
 
         document.querySelector("#diskMirrorBackPath").addEventListener("click", () => fsList.toBackPath());
