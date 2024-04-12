@@ -7,7 +7,7 @@ function transferDeposit() {
         if (fileName) {
             jokerBoxPopUp.show("转存任务已提交，转存表中可查队列信息哦!")
             if (!isShowTransferDeposit_fileList_table){
-                showTransferDeposit_fileList_table();
+                showTransferDeposit_fileList_table(document.getElementById("showTransferDeposit_fileList_table_button"));
             }
             diskMirror.transferDeposit(
                 {
