@@ -5,6 +5,7 @@ function transferDeposit() {
     if (s) {
         const fileName = prompt("请输入您要转存的文件在盘镜中的名字");
         if (fileName) {
+            jokerBoxPopUp.show("转存任务已提交，转存表中可查队列信息哦!")
             diskMirror.transferDeposit(
                 {
                     userId: userId,
@@ -69,7 +70,7 @@ if (searchParams1[0] === null) {
 const userId = searchParams0[searchParams0.length - 1];
 const type = indexConfig.spaceType ? indexConfig.spaceType : 'Binary';
 
-document.querySelector("title").innerText = `盘镜${indexConfig.spaceType}号 空间文件管理器`;
+document.querySelector("title").innerText = `盘镜${userId}号 空间文件管理器`;
 
 function mkdir() {
     const s = prompt("您要创建的目录名字？", '/xxx/xxx');
