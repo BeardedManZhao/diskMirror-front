@@ -58,7 +58,7 @@ function showTransferDeposit_fileList_table(b) {
 }
 
 const progressBar = new ProgressBar(document.querySelector(".progress-bar"), (now, max) => `您的盘镜空间使用量为：${DiskMirrorFront.formatBytes(now)}/${DiskMirrorFront.formatBytes(max)}；占比为：${(now / max * 100).toFixed(2)}%`);
-const diskMirror = new DiskMirror(indexConfig.server);
+let diskMirror = new DiskMirror(indexConfig.server);
 // 获取到id 和 口令
 const searchParams1 = [DiskMirrorFront.getLatestCookieValue('diskMirror_server_pass')]
 const searchParams0 = DiskMirrorFront.search_Params("server_id");
@@ -198,31 +198,60 @@ window.onload = function () {
 
         const transferDeposit_fileList_table = document.querySelector("#transferDeposit_fileList_table tbody");
 
+        // 获取状态灯
+        const status_bar = document.getElementsByClassName("status_bar");
+
+        for (let statusBarElement of status_bar) {
+            statusBarElement.addEventListener("click", function (){
+                if (statusBarElement.style.color === 'red'){
+                    // 代表停止 在这里重新连接
+                    diskMirror = new DiskMirror(indexConfig.server);
+                    jokerBoxPopUp.show("正在重新连接服务器...")
+                } else {
+                    // 代表启动 在这里断开连接
+                    diskMirror.setController("---------------")
+                    jokerBoxPopUp.show("正在断开服务器连接...")
+                }
+            })
+        }
 
         // 转存查询
         setInterval(() => {
-            if (isShowTransferDeposit_fileList_table) {
-                diskMirror.transferDepositStatus({userId: userId, type: type}, (res) => {
-                    transferDeposit_fileList_table.innerHTML = '';
-                    for (const fileName in res) {
-                        const tr = document.createElement("tr");
-                        tr.className = "row0";
-                        const td0 = document.createElement("td");
-                        const span0 = document.createElement("span");
-                        span0.innerText = '';
-                        span0.className = 'load-icon'
-                        const span1 = document.createElement("span");
-                        span1.innerText = ' ' + fileName;
-                        td0.appendChild(span0);
-                        td0.appendChild(span1);
-                        tr.appendChild(td0);
-                        const td1 = document.createElement("td");
-                        td1.innerText = res[fileName];
-                        tr.appendChild(td1);
-                        transferDeposit_fileList_table.appendChild(tr);
-                    }
-                }, (_) => jokerBoxPopUp.show('无法与转存状态服务连接，请检查网络或diskMirror服务器版本是否 >= 1.2.0'));
-            }
+            diskMirror.transferDepositStatus({userId: userId, type: type}, (res) => {
+                const date = DiskMirrorFront.getDate(new Date());
+                document.querySelector("body").className = '';
+                for (let statusBarElement of status_bar) {
+                    statusBarElement.style.color = '#00ffae';
+                    statusBarElement.title = '服务器正常，最近的检查时间：' + date;
+                }
+                transferDeposit_fileList_table.innerHTML = '';
+                for (const fileName in res) {
+                    const tr = document.createElement("tr");
+                    tr.className = "row0";
+                    const td0 = document.createElement("td");
+                    const span0 = document.createElement("span");
+                    span0.innerText = '';
+                    span0.className = 'load-icon'
+                    const span1 = document.createElement("span");
+                    span1.innerText = ' ' + fileName;
+                    td0.appendChild(span0);
+                    td0.appendChild(span1);
+                    tr.appendChild(td0);
+                    const td1 = document.createElement("td");
+                    td1.innerText = res[fileName];
+                    tr.appendChild(td1);
+                    transferDeposit_fileList_table.appendChild(tr);
+                }
+            }, (_) => {
+                document.querySelector("body").className = 'errorBody';
+                for (let statusBarElement of status_bar) {
+                    statusBarElement.style.color = 'red';
+                    statusBarElement.title = '目前无法获取到与服务器的通信！';
+                }
+                if(isShowTransferDeposit_fileList_table) {
+                    jokerBoxPopUp.show('无法与转存状态服务连接，请检查网络或diskMirror服务器版本是否 >= 1.2.0')
+                }
+            });
         }, 5000)
 
         document.querySelector("#diskMirrorBackPath").addEventListener("click", () => fsList.toBackPath());
