@@ -6,7 +6,7 @@ function transferDeposit() {
         const fileName = prompt("请输入您要转存的文件在盘镜中的名字");
         if (fileName) {
             jokerBoxPopUp.show("转存任务已提交，转存表中可查队列信息哦!")
-            if (!isShowTransferDeposit_fileList_table){
+            if (!isShowTransferDeposit_fileList_table) {
                 showTransferDeposit_fileList_table(document.getElementById("showTransferDeposit_fileList_table_button"));
             }
             diskMirror.transferDeposit(
@@ -89,6 +89,60 @@ function mkdir() {
     }
 }
 
+function extractedFsList(res) {
+    if (res.length === 0) {
+        jokerBoxPopUp.show("空空如也，快去创建一个吧！");
+        res = [
+            {
+                "fileName": "(^~^) 现在没有文件，快去创建一个吧！",
+                "url": "https://diskmirror.lingyuzhao.top//29/Binary//Article/Image/bigImage.jpg",
+                "lastModified": new Date().getTime(),
+                "size": 0,
+                "type": "Binary",
+                "isDir": false
+            }
+        ]
+    }
+    return new FS_List('fileName',
+        res,
+        document.getElementById("fileList_table"),
+        (f) => {
+            if (f.isDir) {
+                jokerBoxPopUp.show(f.fileName + " 是一个文件夹。");
+                return;
+            }
+            diskMirror.downLoad(userId, type, f.fileName, (res) => {
+                window.open(res)
+            })
+        }
+        ,
+        (f) => {
+            diskMirror.remove(
+                userId,
+                type,
+                f.fileName,
+                (res) => {
+                    jokerBoxPopUp.show(res.fileName + " 删除成功!!!");
+                })
+        }
+        ,
+        (f) => {
+            const s = prompt("您期望将其重命名为？", f.fileName);
+            if (!s) {
+                return;
+            }
+            diskMirror.reName(
+                userId, type, f.fileName, s,
+                (res) => {
+                    jokerBoxPopUp.show(res.fileName + " 重命名成功!!! 刷新可见新数据!");
+                }
+            )
+        },
+        document.querySelector("#diskMirrorPathInput"),
+        f => diskMirror.downLoad(userId, type, f.fileName, (res) => window.open('preView.html?url=' + res)),
+    );
+}
+
 window.onload = function () {
     let fsList;
     try {
@@ -96,44 +150,7 @@ window.onload = function () {
         diskMirror.getUrls(userId, type,
             (res) => {
                 progressBar.setProgressByValue(res['useSize'], res['maxSize'], 'linear-gradient(to right, rgba(255, 255, 255, 0.5), #8c00ff)')
-                fsList = new FS_List('fileName',
-                    res['urls'],
-                    document.getElementById("fileList_table"),
-                    (f) => {
-                        if (f.isDir) {
-                            jokerBoxPopUp.show(f.fileName + " 是一个文件夹。");
-                            return;
-                        }
-                        diskMirror.downLoad(userId, type, f.fileName, (res) => {
-                            window.open(res)
-                        })
-                    }
-                    ,
-                    (f) => {
-                        diskMirror.remove(
-                            userId,
-                            type,
-                            f.fileName,
-                            (res) => {
-                                jokerBoxPopUp.show(res.fileName + " 删除成功!!!");
-                            })
-                    }
-                    ,
-                    (f) => {
-                        const s = prompt("您期望将其重命名为？", f.fileName);
-                        if (!s) {
-                            return;
-                        }
-                        diskMirror.reName(
-                            userId, type, f.fileName, s,
-                            (res) => {
-                                jokerBoxPopUp.show(res.fileName + " 重命名成功!!! 刷新可见新数据!");
-                            }
-                        )
-                    },
-                    document.querySelector("#diskMirrorPathInput"),
-                    f => diskMirror.downLoad(userId, type, f.fileName, (res) => window.open('preView.html?url=' + res)),
-                );
+                fsList = extractedFsList(res['urls']);
                 // 判断是否需要路径
                 const searchParams = DiskMirrorFront.search_Params('path');
                 if (searchParams.length > 0) {
@@ -145,36 +162,7 @@ window.onload = function () {
                 if ('res' in e) {
                     if (e['res'].endsWith("不可读!!!")) {
                         // 这里代表用户是第一次使用 盘镜 所以可能没有目录 但并不代表是发生了错误!!!
-                        fsList = new FS_List('fileName',
-                            [],
-                            document.getElementById("fileList_table"),
-                            (f) => {
-                                if (f.isDir) {
-                                    jokerBoxPopUp.show(f.fileName + " 是一个文件夹。");
-                                    return;
-                                }
-                                diskMirror.downLoad(userId, type, f.fileName, (res) => {
-                                    window.open(res)
-                                })
-                            }
-                            ,
-                            (f) => {
-                                diskMirror.remove(
-                                    userId,
-                                    type,
-                                    f.fileName,
-                                    (res) => {
-                                        jokerBoxPopUp.show(res.fileName + " 删除成功!!!");
-                                    })
-                            }
-                            ,
-                            (fileName) => {
-                                console.log('reName', fileName);
-                                jokerBoxPopUp.show("还没接入重命名操作!")
-                            },
-                            document.querySelector("#diskMirrorPathInput"),
-                            f => diskMirror.downLoad(userId, type, f.fileName, (res) => window.open('preView.html?url=' + res)),
-                        );
+                        fsList = extractedFsList([])
                         // 判断是否需要路径
                         const searchParams = DiskMirrorFront.search_Params('path');
                         if (searchParams.length > 0) {
