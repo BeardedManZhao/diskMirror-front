@@ -48,19 +48,29 @@
 <script>
     const htmlHeadingElement = document.querySelector("h2");
     const searchParams = DiskMirrorFront.search_Params("url");
+
+    // 获取到文件名字
+    let searchParams1;
     if (searchParams.length === 0) {
         htmlHeadingElement.innerText = "请您确保是从文件管理界面跳转过来的!"
         document.querySelector("body").classList.add('notFind')
     } else {
+
+        const searchParam = searchParams[searchParams.length - 1];
+        searchParams1 = DiskMirrorFront.search_Params("fileName", searchParam);
         // 获取到 url
         const imageExtensions = ['.jpg', '.png', '.jpeg', '.gif', '.bmp', '.webp'];
         const videoExtensions = ['.mp4', '.avi', '.mkv', '.flv', '.wmv', '.mov', '.mpg', '.mpeg', '.rmvb', '.rm', '.3gp', '.ts', '.m4v', '.webm', '.vob', '.mts', '.m2ts', '.mxf', '.ogv', '.ogm', '.m2v', '.mpe'];
         const audioExtensions = ['.mp3', '.wav', '.flac', '.aac', '.wma'];
-        const searchParam = searchParams[searchParams.length - 1];
+        const textExtensions = ['.yaml', '.txt', '.log', '.md', '.json', '.xml', '.yml', '.ini', '.cfg', '.conf', '.properties'];
+
         htmlHeadingElement.innerText = searchParam;
 
         // 获取到后缀
-        const searchParamType = searchParam.substring(searchParam.lastIndexOf('.'));
+        const searchParamName = searchParams1[searchParams1.length - 1];
+        const searchParamType = searchParamName.substring(searchParamName.lastIndexOf('.'));
+
+        console.info(searchParamType)
 
         if (imageExtensions.includes(searchParamType)) {
             document.querySelector('img').src = searchParam;
@@ -71,8 +81,18 @@
         } else if (audioExtensions.includes(searchParamType)) {
             document.querySelector('audio').src = searchParam;
             document.querySelector('audio').hidden = false;
+        } else if (textExtensions.includes(searchParamType)) {
+            // 直接使用 FileWriter
+            const searchParams = DiskMirrorFront.search_Params("server_id");
+            if (searchParams.length < 1) {
+                alert("error!!!")
+                window.location.href = "index.html"
+            }
+            const s = `FileWriter.html?server_id=${searchParams[searchParams.length - 1]}&fileName=${searchParamName}&fileUrl=${searchParam}`;
+            console.info(s)
+            window.location.href = s
         } else {
-            document.querySelector('button').innerText = `不支持预览 *${searchParamType} 点击下载!`
+            document.querySelector('button').innerText = `不支持预览 ${searchParamName} 点击下载!`
         }
 
         document.querySelector('.download_button').addEventListener('click', () => window.open(searchParam))

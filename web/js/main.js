@@ -1,9 +1,9 @@
 const jokerBoxPopUp = new JokerBox_popUp(document.getElementById("show_area"));
 
 function transferDeposit() {
-    const s = prompt("请输入您要转存的文件的 url");
+    const s = prompt("请输入您要转存的文件的 url", "https://xxx");
     if (s) {
-        const fileName = prompt("请输入您要转存的文件在盘镜中的名字");
+        const fileName = prompt("请输入您要转存的文件在盘镜中的存储路径", "/transferDeposit/xxx");
         if (fileName) {
             jokerBoxPopUp.show("转存任务已提交，转存表中可查队列信息哦!")
             if (!isShowTransferDeposit_fileList_table) {
@@ -139,7 +139,7 @@ function extractedFsList(res) {
             )
         },
         document.querySelector("#diskMirrorPathInput"),
-        f => diskMirror.downLoad(userId, type, f.fileName, (res) => window.open('preView.html?url=' + res)),
+        f => diskMirror.downLoad(userId, type, f.fileName, (res) => window.open(`preView.html?server_id=${userId}&url=` + res)),
     );
 }
 
@@ -202,8 +202,8 @@ window.onload = function () {
         const status_bar = document.getElementsByClassName("status_bar");
 
         for (let statusBarElement of status_bar) {
-            statusBarElement.addEventListener("click", function (){
-                if (statusBarElement.style.color === 'red'){
+            statusBarElement.addEventListener("click", function () {
+                if (statusBarElement.style.color === 'red') {
                     // 代表停止 在这里重新连接
                     diskMirror.setController('/FsCrud');
                     jokerBoxPopUp.show("正在重新连接服务器...");
@@ -248,7 +248,7 @@ window.onload = function () {
                     statusBarElement.style.color = 'red';
                     statusBarElement.title = '目前无法获取到与服务器的通信！';
                 }
-                if(isShowTransferDeposit_fileList_table) {
+                if (isShowTransferDeposit_fileList_table) {
                     jokerBoxPopUp.show('无法与转存状态服务连接，请检查网络或diskMirror服务器版本是否 >= 1.2.0')
                 }
             });
@@ -324,4 +324,55 @@ window.onload = function () {
             }
         ], document.getElementById("fileList_table"))
     }
+
+    // 设置粘贴事件
+    DiskMirrorFront.readClipboard(
+        [document.getElementsByClassName("div3")[0]],
+        // 图片数据
+        (file) => {
+            const randomInt = file.size + new Date().getTime();
+            const fileName_old = randomInt + ".jpg";
+            // 获取到当前层级
+            diskMirror.upload({
+                fileName: fileName_old,
+                userId: userId,
+                type: 'Binary'
+            }, file, (res) => {
+                jokerBoxPopUp.show(res.fileName + " 上传成功!!! 刷新可见");
+            }, undefined, undefined);
+        },
+        // 文本数据不需要进行任何操作
+        (_) => {
+        },
+        // 视频数据
+        (file) => {
+            let fileName = prompt("请输入您上传的视频文件名称，若不设置则无法上传");
+            if (fileName == null || fileName.length <= 0) {
+                return
+            }
+            // 获取到当前层级
+            diskMirror.upload({
+                fileName: fileName,
+                userId: userId,
+                type: 'Binary'
+            }, file, (res) => {
+                jokerBoxPopUp.show(res.fileName + " 上传成功!!! 刷新可见");
+            }, undefined, undefined);
+        },
+        // 文件数据
+        (file) => {
+            const fileName = prompt("请输入您上传的文件名称，下面是默认名称，您可以自由修改", "未命名文件_" + DiskMirrorFront.getDate(new Date()));
+            if (fileName == null || fileName.length <= 0) {
+                jokerBoxPopUp.show("您已取消文件上传!")
+                return;
+            }
+            // 获取到当前层级
+            diskMirror.upload({
+                fileName: fileName,
+                userId: userId,
+                type: 'Binary'
+            }, file, (res) => {
+                jokerBoxPopUp.show(res.fileName + " 上传成功!!! 刷新可见");
+            }, undefined, undefined);
+        }, undefined, undefined, false)
 }

@@ -154,7 +154,7 @@ input:focus {
     animation: rotateText 2s linear infinite;
 }
 
-.status_bar{
+.status_bar {
     background-color: rgba(0, 0, 0, 0.72);
     padding: 10px;
     border-radius: 50%;
