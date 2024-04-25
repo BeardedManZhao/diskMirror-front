@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>写文章</title>
+    <title>文件编辑器</title>
     <link href="image/logo.png" rel="icon">
     <link href="css/icomoon.css" rel="stylesheet">
     <link href="css/backEnd.css" rel="stylesheet">
@@ -77,11 +77,34 @@
             window.location.href = "index.html";
         });
         $("#save_button").click(function () {
-            jokerBoxPopUp.show("还未接入")
+            if (isUpdate) {
+                const type1 = type;
+                const name = searchParams0[searchParams0.length - 1];
+                diskMirror.remove(userId, type1, searchParams0[searchParams0.length - 1],
+                    (res) => {
+                        diskMirror.upload({
+                            userId: userId,
+                            type: type1,
+                            fileName: name
+                        }, editor.getMarkdown(), (r) => jokerBoxPopUp.show(r.fileName + " 保存成功！"), (error) => jokerBoxPopUp.show("保存操作出现了问题!请稍后再试吧！" + error));
+                    },
+                    (error) => jokerBoxPopUp.show("覆写操作出现了问题!请稍后再试吧！" + error)
+                )
+            }
         });
 
         $("#remove_button").click(function () {
             jokerBoxPopUp.show("还未接入")
+            if (isUpdate) {
+                if (confirm("您确定要删除此文件吗？")) {
+                    diskMirror.remove(userId, type, searchParams0[searchParams0.length - 1],
+                        (res) => jokerBoxPopUp.show(res.fileName + " 删除完毕！"),
+                        (error) => jokerBoxPopUp.show("删除操作出现了问题!请稍后再试吧！" + error)
+                    )
+                }
+            } else {
+                jokerBoxPopUp.show("此文件还没有保存，因此无法删除！")
+            }
         });
 
         $("#download_button").click(function () {
