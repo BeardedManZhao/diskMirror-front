@@ -89,6 +89,10 @@ function mkdir() {
     }
 }
 
+function mkFile() {
+    window.open('FileWriter.html?server_id=' + userId)
+}
+
 function extractedFsList(res) {
     if (res.length === 0) {
         jokerBoxPopUp.show("空空如也，快去创建一个吧！");

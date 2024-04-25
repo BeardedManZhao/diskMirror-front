@@ -52,6 +52,13 @@
         const searchParams0 = DiskMirrorFront.search_Params("fileName");
         const searchParams1 = DiskMirrorFront.search_Params("fileUrl");
         const isUpdate = searchParams0.length > 0 && searchParams1.length > 0;
+        let fileName_str;
+        if (isUpdate) {
+            fileName_str = searchParams0[searchParams0.length - 1];
+        } else {
+            const s1 = prompt("请您为文件起个名字吧！", "/xxx/xxx/Untitled_" + DiskMirrorFront.getDate(new Date()));
+            fileName_str = s1 ? s1 : '未命名文件_' + DiskMirrorFront.getDate(new Date()) + '.md';
+        }
         const jokerBoxPopUp = new JokerBox_popUp(document.getElementById("joker"));
         const diskMirror = new DiskMirror(indexConfig.server);
         diskMirror.setSk(parseInt(DiskMirrorFront.getLatestCookieValue("diskMirror_server_pass")), indexConfig.domain)
@@ -79,26 +86,41 @@
         $("#save_button").click(function () {
             if (isUpdate) {
                 const type1 = type;
-                const name = searchParams0[searchParams0.length - 1];
                 diskMirror.remove(userId, type1, searchParams0[searchParams0.length - 1],
                     (res) => {
                         diskMirror.upload({
                             userId: userId,
                             type: type1,
-                            fileName: name
+                            fileName: fileName_str
                         }, editor.getMarkdown(), (r) => jokerBoxPopUp.show(r.fileName + " 保存成功！"), (error) => jokerBoxPopUp.show("保存操作出现了问题!请稍后再试吧！" + error));
                     },
                     (error) => jokerBoxPopUp.show("覆写操作出现了问题!请稍后再试吧！" + error)
                 )
+            } else {
+                diskMirror.upload({
+                        userId: userId,
+                        type: type,
+                        fileName: fileName_str
+                    }, editor.getMarkdown(), (r) => {
+                        jokerBoxPopUp.show(r.fileName + " 保存成功！稍后自动跳转到文件管理器！");
+                        setTimeout(() => {
+                            window.location.href = `FileExplorer.html?server_id=${userId}&path=/`
+                        }, 5000);
+                    }, (error) => jokerBoxPopUp.show("保存操作出现了问题!请稍后再试吧！" + error)
+                );
             }
         });
 
         $("#remove_button").click(function () {
-            jokerBoxPopUp.show("还未接入")
             if (isUpdate) {
                 if (confirm("您确定要删除此文件吗？")) {
-                    diskMirror.remove(userId, type, searchParams0[searchParams0.length - 1],
-                        (res) => jokerBoxPopUp.show(res.fileName + " 删除完毕！"),
+                    diskMirror.remove(userId, type, fileName_str,
+                        (res) => {
+                            jokerBoxPopUp.show(res.fileName + " 删除完毕！稍后自动跳转到文件管理器");
+                            setTimeout(() => {
+                                window.location.href = `FileExplorer.html?server_id=${userId}&path=/`
+                            }, 5000);
+                        },
                         (error) => jokerBoxPopUp.show("删除操作出现了问题!请稍后再试吧！" + error)
                     )
                 }
@@ -108,7 +130,11 @@
         });
 
         $("#download_button").click(function () {
-            window.open(searchParams1[searchParams1.length - 1])
+            if (isUpdate) {
+                window.open(searchParams1[searchParams1.length - 1])
+            } else {
+                jokerBoxPopUp.show("请您重新打开此文件，便于获取到文件下载链接！")
+            }
         });
 
         // 设置粘贴事件
@@ -117,7 +143,7 @@
             // 图片数据
             (file) => {
                 const randomInt = file.size + new Date().getTime();
-                const fileName_old = searchParams0 + "_resource/" + randomInt + ".jpg";
+                const fileName_old = fileName_str + "_resource/" + randomInt + ".jpg";
                 // 获取到当前层级
                 diskMirror.upload({
                     fileName: fileName_old,
@@ -125,7 +151,7 @@
                     type: type
                 }, file, (res) => {
                     diskMirror.downLoad(userId, indexConfig.spaceType, fileName_old, (url) => {
-                        editor.insertValue(`\n[${res.fileName}](${url})\n`);
+                        editor.insertValue(`\n![${res.fileName}](${url})\n`);
                     })
                     jokerBoxPopUp.show(res.fileName + " 上传成功!!! ");
                 }, undefined, undefined);
@@ -140,7 +166,7 @@
                     return
                 }
                 // 获取到当前层级
-                const s = searchParams0 + "_resource/" + fileName;
+                const s = fileName_str + "_resource/" + fileName;
                 diskMirror.upload({
                     fileName: s,
                     userId: userId,
@@ -160,7 +186,7 @@
                     return;
                 }
                 // 获取到当前层级
-                const s = searchParams0 + "_resource/" + fileName;
+                const s = fileName_str + "_resource/" + fileName;
                 diskMirror.upload({
                     fileName: s,
                     userId: userId,
