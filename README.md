@@ -34,7 +34,7 @@ const indexConfig = {
 
 #### 文件管理器
 
-![image](https://github.com/BeardedManZhao/diskMirror-front/assets/113756063/236ba1c3-cebf-488b-a732-67e1d52554f3)
+![image](https://github.com/BeardedManZhao/diskMirror-front/assets/113756063/d1f4c15a-193c-40d0-ae0c-9c3fb3a499bb)
 
 ## 更新记录
 
