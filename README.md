@@ -36,6 +36,10 @@ const indexConfig = {
 
 ![image](https://github.com/BeardedManZhao/diskMirror-front/assets/113756063/d1f4c15a-193c-40d0-ae0c-9c3fb3a499bb)
 
+#### 文件编辑器
+
+![image](https://github.com/BeardedManZhao/diskMirror-backEnd-spring-boot/assets/113756063/24dd3537-3e4d-43b1-b1ec-d86790a9c277)
+
 ## 更新记录
 
 ### 1.0.6 版本 发布
