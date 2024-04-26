@@ -319,6 +319,9 @@ window.onload = function () {
         })
 
         document.getElementById("fileUpload").addEventListener("change", function (e) {
+            if (!isShowTransferDeposit_fileList_table) {
+                showTransferDeposit_fileList_table(document.getElementById("showTransferDeposit_fileList_table_button"));
+            }
             const files = e.target.files;
             // 获取到当前层级
             const element = document.querySelector("#diskMirrorPathInput").value;
