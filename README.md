@@ -6,6 +6,10 @@ DiskMirror 的浏览器客户端，其能够接入到任何盘镜服务器中，
 
 ### 部署您的盘镜后端
 
+> 在较新版本的后端服务器中，已经自动将此前端项目集成到了服务器中，您可以直接访问服务器的 8080 端口，访问即可进入WebUI界面，不需要手动集成了。
+
+> 若您是使用的旧版本，或没有成功通过8080 访问到前端界面，您可以按照此教程继续阅读。
+
 后端的部署操作是很简单的，您可以直接将 [后端服务器](https://github.com/BeardedManZhao/diskMirror-backEnd-spring-boot.git)
 部署在您的服务器中，然后直接启动！
 
@@ -34,7 +38,7 @@ const indexConfig = {
 
 #### 文件管理器
 
-![image](https://github.com/BeardedManZhao/diskMirror-front/assets/113756063/d1f4c15a-193c-40d0-ae0c-9c3fb3a499bb)
+![181fdc0682b05eb8ad2800a99a57df1](https://github.com/user-attachments/assets/7f8ecca0-c0e3-4f0c-b2e0-9d3a50b3ecf5)
 
 #### 文件编辑器
 
